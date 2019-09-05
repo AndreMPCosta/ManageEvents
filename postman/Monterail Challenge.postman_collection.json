@@ -1,0 +1,1848 @@
+{
+	"info": {
+		"_postman_id": "887aeaaa-e5ab-4ad5-b613-ab2dbef80f76",
+		"name": "Monterail Challenge",
+		"description": "**What does the API do?**\n\nHigh-level features\n1.\tGet info about an **event**\n2.\tGet info about available **tickets**\n3.\tReserve **ticket**\n4.\tPay for **ticket**\n5.\tGet info about **reservation**\n6.\tGet **reservation** statistics\n\n\n**Authentication**\nThis API uses JWT authentication, and some of the endpoints requires a valid JWT access token.\n\n**Configuration**\nThis collection requires two predefined environment variables, which are listed below.\n\nurl: The root url of the Flask app. The default value should be 127.0.0.1:5000 (if it is running locally)\n\naccess_token: (optional) JWT used for login. It will be set automatically by some of the request test scripts.\n\n**Error Codes**\n\n**400**: When there is a bad request\n\n**401**: When there is an unsuccessful authentication\n\n**404**: When the requested data is not found\n\n**500**: When something else unexpected occurs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register a new user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"Monterail\",\n\t\"password\": \"1234\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"register"
+							]
+						},
+						"description": "Register a new user."
+					},
+					"response": [
+						{
+							"name": "register a new user",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"Monterail\",\n\t\"password\": \"1234\",\n\t\"admin\": \"True\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "CREATED",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "48",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 23 May 2018 15:55:58 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User created successfully.\"\n}\n"
+						}
+					]
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8c0c0ed6-c206-4c88-9349-429e024e312b",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.test(\"access_token not empty\", function () {",
+									"    pm.expect(jsonData.access_token).not.eql(undefined);",
+									"});",
+									"// set access token as environement variable",
+									"if (jsonData.access_token !== undefined) {",
+									"    postman.setEnvironmentVariable(\"access_token\", jsonData.access_token);",
+									"} else {",
+									"    postman.setEnvironmentVariable(\"access_token\", null);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\" : \"MonterailUser\",\n  \"password\" : \"1234\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login using username and password. If authenticated, an active fresh `access_token` will be issued."
+					},
+					"response": [
+						{
+							"name": "login failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\" : \"Monterail\",\n  \"password\" : \"wrong_password\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "UNAUTHORIZED",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "42",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 23 May 2018 16:13:14 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Invalid Credentials!\"\n}\n"
+						},
+						{
+							"name": "login successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\" : \"Monterail\",\n  \"password\" : \"1234\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "570",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 23 May 2018 16:12:22 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MjcwOTE5NDIsIm5iZiI6MTUyNzA5MTk0MiwianRpIjoiOWUxZjQxMzUtODU0Ny00MWYzLWJkNjMtMzRiYzcyNDc1MmI0IiwiZXhwIjoxNTI3MDkyODQyLCJpZGVudGl0eSI6MSwiZnJlc2giOnRydWUsInR5cGUiOiJhY2Nlc3MifQ.ekXY9wyn50mQ2xk5smTUL10b5igKoY_placeholder\",\n    \"refresh_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MjcwOTE5NDIsIm5iZiI6MTUyNzA5MTk0MiwianRpIjoiYmY4YjhmZjktYjMxMC00NDJjLTg4MzAtZjU2MzdkNTU1OGE5IiwiZXhwIjoxNTI5NjgzOTQyLCJpZGVudGl0eSI6MSwidHlwZSI6InJlZnJlc2gifQ.d1D-QnRfZTgNJBrAUSJXu4J8GZ1tmD_placeholder\"\n}"
+						}
+					]
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dc763e9b-e6c7-4ff3-9766-637976a5c64b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"logout"
+							]
+						},
+						"description": "Logout a user."
+					},
+					"response": [
+						{
+							"name": "logout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/logout",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "58",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 24 May 2018 18:32:11 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User Monterail successfully logged out.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "find user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4311f7d8-283e-4ba6-843b-d67de64489de",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.test(\"user confirmation found\", function () {",
+									"    pm.expect(jsonData.confirmation).not.eql(undefined);",
+									"});",
+									"",
+									"if (jsonData.confirmation !== undefined) {",
+									"    pm.environment.set(\"confirmation_id\", jsonData.confirmation.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/user/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						},
+						"description": "Find a user by its id."
+					},
+					"response": [
+						{
+							"name": "get user by id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/user/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "242",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 24 May 2018 18:31:14 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"username\": \"Monterai\"\n}"
+						},
+						{
+							"name": "user not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/user/2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"2"
+									]
+								}
+							},
+							"status": "NOT FOUND",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "36",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 24 May 2018 18:32:24 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.14.1 Python/3.6.1",
+									"name": "Server",
+									"description": "A name for the server"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User not found\"\n}\n"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "event",
+			"item": [
+				{
+					"name": "create event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Tomorrowland\",\n\t\"date\": \"2019-09-03\",\n\t\"time\": \"14:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/event",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event"
+							]
+						},
+						"description": "Creating an event with at least a name and a date and time (mandatory fields).\n\n1.\tEvent has a **name**\n2.\tEvent has a **date** and a **time**\n3.\tEvent can have multiple types of tickets (eg. regular, premium, VIP)\n"
+					},
+					"response": [
+						{
+							"name": "missing a field",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"Tomorrowland\",\n\t\"time\": \"14:00:00\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/event",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"event"
+									]
+								}
+							},
+							"status": "BAD REQUEST",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "59"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:33:32 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"date\": [\n        \"Missing data for required field.\"\n    ]\n}"
+						},
+						{
+							"name": "create event successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"Tomorrowland\",\n\t\"date\": \"2019-09-03\",\n\t\"time\": \"14:00:00\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/event",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"event"
+									]
+								}
+							},
+							"status": "CREATED",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "397"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:31:51 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"name\": \"Tomorrowland\",\n    \"tickets\": [\n        {\n            \"number_available\": 30,\n            \"ticket_type\": \"VIP\"\n        },\n        {\n            \"number_available\": 200,\n            \"ticket_type\": \"Regular\"\n        },\n        {\n            \"number_available\": 100,\n            \"ticket_type\": \"Premium\"\n        }\n    ],\n    \"time\": \"14:00:00\",\n    \"date\": \"2019-09-03\"\n}"
+						}
+					]
+				},
+				{
+					"name": "find event by name",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/event/name/BOOM Festival",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"name",
+								"BOOM Festival"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "event not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/event/name/NOS Alive",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"event",
+										"name",
+										"NOS Alive"
+									]
+								}
+							},
+							"status": "NOT FOUND",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:36:59 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Event not found.\"\n}"
+						},
+						{
+							"name": "find event by name successfuly",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/event/name/BOOM Festival",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"event",
+										"name",
+										"BOOM Festival"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "398"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:36:13 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 2,\n    \"name\": \"BOOM Festival\",\n    \"tickets\": [\n        {\n            \"number_available\": 29,\n            \"ticket_type\": \"VIP\"\n        },\n        {\n            \"number_available\": 200,\n            \"ticket_type\": \"Regular\"\n        },\n        {\n            \"number_available\": 100,\n            \"ticket_type\": \"Premium\"\n        }\n    ],\n    \"time\": \"14:00:00\",\n    \"date\": \"2019-09-05\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get all events",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/events",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"events"
+							]
+						},
+						"description": "List all the events in the database."
+					},
+					"response": [
+						{
+							"name": "showing all events",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/events",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"events"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1141"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:37:45 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"events\": [\n        {\n            \"id\": 1,\n            \"name\": \"Tomorrowland\",\n            \"tickets\": [\n                {\n                    \"number_available\": 30,\n                    \"ticket_type\": \"VIP\"\n                },\n                {\n                    \"number_available\": 199,\n                    \"ticket_type\": \"Regular\"\n                },\n                {\n                    \"number_available\": 98,\n                    \"ticket_type\": \"Premium\"\n                }\n            ],\n            \"time\": \"14:00:00\",\n            \"date\": \"2019-09-03\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"BOOM Festival\",\n            \"tickets\": [\n                {\n                    \"number_available\": 29,\n                    \"ticket_type\": \"VIP\"\n                },\n                {\n                    \"number_available\": 200,\n                    \"ticket_type\": \"Regular\"\n                },\n                {\n                    \"number_available\": 100,\n                    \"ticket_type\": \"Premium\"\n                }\n            ],\n            \"time\": \"14:00:00\",\n            \"date\": \"2019-09-05\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5b5c12a3-c620-4de6-952b-838a306dba04",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "47f2fbdd-1017-4c35-843c-be60e3eb9b92",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "reservation",
+			"item": [
+				{
+					"name": "create reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_id\" : 1,\n    \"ticket_type\" : \"Premium\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/reservation",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation"
+							]
+						},
+						"description": "Create a reservation for a specific user.\nUser must be logged in.\n\nReservation must indicate the event_id number and whick ticket type it is.\n(VIP, Premium, Regular)"
+					},
+					"response": [
+						{
+							"name": "create reservation with ticket type being typed with lowercase and uppercase",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"event_id\" : 1,\n    \"ticket_type\" : \"ViP\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation"
+									]
+								}
+							},
+							"status": "CREATED",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:53:02 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Your reservation was successful.\"\n}"
+						},
+						{
+							"name": "invalid ticket type",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"event_id\" : 1,\n    \"ticket_type\" : \"Balcony\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation"
+									]
+								}
+							},
+							"status": "BAD REQUEST",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "101"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:39:46 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"That is not a valid ticket type. Please choose between VIP, Regular or Premium.\"\n}"
+						},
+						{
+							"name": "create reservation successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"event_id\" : 1,\n    \"ticket_type\" : \"VIP\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation"
+									]
+								}
+							},
+							"status": "CREATED",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "54"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:38:35 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Your reservation was successful.\"\n}"
+						},
+						{
+							"name": "invalid event",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"event_id\" : 5,\n    \"ticket_type\" : \"VIP\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation"
+									]
+								}
+							},
+							"status": "NOT FOUND",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:39:13 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"That is not a valid event\"\n}"
+						}
+					]
+				},
+				{
+					"name": "find reservation by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/reservation/709260a6bd8d4259a918f4e84d1da24b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"709260a6bd8d4259a918f4e84d1da24b"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "find reservation by id (paid)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/reservation/68836b2d58d94876b67214aa15e206ec",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation",
+										"68836b2d58d94876b67214aa15e206ec"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "153"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 13:59:53 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ticket_type\": \"VIP\",\n    \"user\": 1,\n    \"remaining_time\": \"N/A\",\n    \"id\": \"68836b2d58d94876b67214aa15e206ec\",\n    \"paid\": true,\n    \"event\": 2\n}"
+						},
+						{
+							"name": "find reservation by id (not paid and expired)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/reservation/709260a6bd8d4259a918f4e84d1da24b",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation",
+										"709260a6bd8d4259a918f4e84d1da24b"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "162"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 14:14:46 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"paid\": false,\n    \"remaining_time\": \"Expired\",\n    \"event\": 1,\n    \"user\": 1,\n    \"id\": \"709260a6bd8d4259a918f4e84d1da24b\",\n    \"ticket_type\": \"Regular\"\n}"
+						},
+						{
+							"name": "find reservation by id (not paid and with remaining time)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/reservation/ee9cd8eb8d7c4e6da8c06277f41210b1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation",
+										"ee9cd8eb8d7c4e6da8c06277f41210b1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "159"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 14:00:20 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ticket_type\": \"VIP\",\n    \"user\": 1,\n    \"remaining_time\": \"00:07:42\",\n    \"id\": \"ee9cd8eb8d7c4e6da8c06277f41210b1\",\n    \"paid\": false,\n    \"event\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "pay reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"amount\": 20,\n\t\"token\": \"valid\",\n\t\"currency\": \"EUR\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/reservation/789f34bc3e8b40779b816f30b7ccaa34",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"reservation",
+								"789f34bc3e8b40779b816f30b7ccaa34"
+							]
+						},
+						"description": "Pay for a specific reservation. The id is passed through the URL\n(/reservation/id).\n\nThe body should contain these fields:\n* amount (the value of the ticket)\n* token (card_error, payment_error, etc)\n* *currency* (which currency is the payment being made, optional field, defaults to EUR)"
+					},
+					"response": [
+						{
+							"name": "pay reservation successfully",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"amount\": 20,\n\t\"token\": \"valid\",\n\t\"currency\": \"EUR\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation/789f34bc3e8b40779b816f30b7ccaa34",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation",
+										"789f34bc3e8b40779b816f30b7ccaa34"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 14:23:36 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"PaymentResult\": {\n        \"amount\": 20,\n        \"currency\": \"EUR\"\n    }\n}"
+						},
+						{
+							"name": "try to pay an expired reservation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"amount\": 20,\n\t\"token\": \"valid\",\n\t\"currency\": \"EUR\"\n}"
+								},
+								"url": {
+									"raw": "{{url}}/reservation/68836b2d58d94876b67214aa15e206ec",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"reservation",
+										"68836b2d58d94876b67214aa15e206ec"
+									]
+								}
+							},
+							"status": "BAD REQUEST",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "110"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 14:21:57 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Sorry, that reservation is already expired. Please make a new reservation and pay after.\"\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5b5c12a3-c620-4de6-952b-838a306dba04",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "47f2fbdd-1017-4c35-843c-be60e3eb9b92",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "statistics",
+			"item": [
+				{
+					"name": "get event statistics",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/statistics/event/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"statistics",
+								"event",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "event not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/statistics/event/6",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"statistics",
+										"event",
+										"6"
+									]
+								}
+							},
+							"status": "NOT FOUND",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "38"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 15:12:47 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Event not found.\"\n}"
+						},
+						{
+							"name": "get event statistics successfully",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/statistics/event/1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"statistics",
+										"event",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "929"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 15:13:20 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"reservations\": {\n        \"total\": 30,\n        \"details\": {\n            \"VIP\": {\n                \"total\": 11,\n                \"explicit\": {\n                    \"paid\": 0,\n                    \"not_paid\": {\n                        \"expired\": 11,\n                        \"not_expired\": 0\n                    }\n                }\n            },\n            \"Regular\": {\n                \"total\": 5,\n                \"explicit\": {\n                    \"paid\": 1,\n                    \"not_paid\": {\n                        \"expired\": 4,\n                        \"not_expired\": 0\n                    }\n                }\n            },\n            \"Premium\": {\n                \"total\": 14,\n                \"explicit\": {\n                    \"paid\": 3,\n                    \"not_paid\": {\n                        \"expired\": 11,\n                        \"not_expired\": 0\n                    }\n                }\n            }\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get statistics for all of the events",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/statistics/events",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"statistics",
+								"events"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get statistics for all of the events",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/statistics/events",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"statistics",
+										"events"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2892"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 15:14:31 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"events\": [\n        {\n            \"Tomorrowland\": {\n                \"id\": 1,\n                \"reservations\": {\n                    \"total\": 30,\n                    \"details\": {\n                        \"VIP\": {\n                            \"total\": 11,\n                            \"explicit\": {\n                                \"paid\": 0,\n                                \"not_paid\": {\n                                    \"expired\": 11,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        },\n                        \"Regular\": {\n                            \"total\": 5,\n                            \"explicit\": {\n                                \"paid\": 1,\n                                \"not_paid\": {\n                                    \"expired\": 4,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        },\n                        \"Premium\": {\n                            \"total\": 14,\n                            \"explicit\": {\n                                \"paid\": 3,\n                                \"not_paid\": {\n                                    \"expired\": 11,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        },\n        {\n            \"BOOM Festival\": {\n                \"id\": 2,\n                \"reservations\": {\n                    \"total\": 10,\n                    \"details\": {\n                        \"VIP\": {\n                            \"total\": 4,\n                            \"explicit\": {\n                                \"paid\": 1,\n                                \"not_paid\": {\n                                    \"expired\": 3,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        },\n                        \"Regular\": {\n                            \"total\": 2,\n                            \"explicit\": {\n                                \"paid\": 0,\n                                \"not_paid\": {\n                                    \"expired\": 2,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        },\n                        \"Premium\": {\n                            \"total\": 4,\n                            \"explicit\": {\n                                \"paid\": 0,\n                                \"not_paid\": {\n                                    \"expired\": 4,\n                                    \"not_expired\": 0\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "get statistics for a specific ticket type",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/statistics/tickets/premium",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"statistics",
+								"tickets",
+								"premium"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get statistics for a specific ticket type",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{url}}/statistics/tickets/premium",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"statistics",
+										"tickets",
+										"premium"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "207"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.15.4 Python/3.7.1"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 06 Jul 2019 15:15:03 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Premium\": {\n        \"total\": 18,\n        \"explicit\": {\n            \"paid\": 3,\n            \"not_paid\": {\n                \"expired\": 15,\n                \"not_expired\": 0\n            }\n        }\n    }\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5b5c12a3-c620-4de6-952b-838a306dba04",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "47f2fbdd-1017-4c35-843c-be60e3eb9b92",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3c97a9da-09e4-47bc-a581-574d35c59e1e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "200075e5-e072-47a0-b4b0-649a124c79da",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
